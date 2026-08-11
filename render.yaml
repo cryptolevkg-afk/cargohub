@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: cargohub-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: node scripts/migrate.js && node src/server.js
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cargohub-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 4000
+
+databases:
+  - name: cargohub-db
+    plan: free
+    databaseName: cargohub
+    user: cargohub
